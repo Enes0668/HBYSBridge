@@ -47,7 +47,7 @@ namespace HBYSBridge.Services
             // C) Global Klavye & Fare
             InstallGlobalHooks();
 
-            LogMessage?.Invoke("[Keleş Motoru Devrede] 1. Gamepad/Joystick  2. Xbox  3. Seri/COM Port  4. USB Klavye/Fare Pedalları dinleniyor!");
+            LogMessage?.Invoke("[Donanım Servisi] USB ve COM Port dinleyicileri aktif (Gamepad, XInput, Seri Port).");
         }
 
         public void Stop()
