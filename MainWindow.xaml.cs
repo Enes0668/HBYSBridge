@@ -32,6 +32,7 @@ namespace HBYSBridge
             _sniffer.LogMessage += AddLog;
             _sniffer.ControllerStatusChanged += OnControllerStatusChanged;
             _server.LogMessageReceived += AddLog;
+            _server.CommandTriggeredFromWeb += OnExternalTestCommand;
 
             Loaded += MainWindow_Loaded;
             Closing += MainWindow_Closing;
@@ -194,6 +195,17 @@ namespace HBYSBridge
             });
         }
 
+        private void OnExternalTestCommand(string device)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (device.Equals("pedal", StringComparison.OrdinalIgnoreCase))
+                {
+                    _sniffer.SimulateComPedalPress("COM3");
+                }
+            });
+        }
+
         private void BtnAssign_Click(object sender, RoutedEventArgs e)
         {
             if (GridMappings.SelectedItem is CommandMapping selected)
@@ -217,11 +229,6 @@ namespace HBYSBridge
             }
         }
 
-        private void BtnSimulatePedal_Click(object sender, RoutedEventArgs e)
-        {
-            AddLog("[Test] Sanal ayak pedalına basıldı sinyali üretiliyor...");
-            _sniffer.SimulateComPedalPress("COM3");
-        }
 
         private void RefreshComPorts()
         {

@@ -90,6 +90,13 @@ namespace HBYSBridge.Services
             {
                 responseJson = "{\"status\":\"running\",\"device\":\"Connected\",\"screens\":1}";
             }
+            else if (req.Url?.AbsolutePath.Contains("/simulate") == true || req.Url?.AbsolutePath.Contains("/test") == true)
+            {
+                string dev = req.QueryString["device"] ?? "pedal";
+                CommandTriggeredFromWeb?.Invoke(dev);
+                responseJson = $"{{\"status\":\"simulated\",\"device\":\"{dev}\",\"timestamp\":\"{DateTime.Now:O}\"}}";
+                LogMessageReceived?.Invoke($"[Harici Test API] Dışarıdan '{dev}' sinyali enjekte edildi.");
+            }
 
             byte[] buffer = Encoding.UTF8.GetBytes(responseJson);
             res.ContentType = "application/json";

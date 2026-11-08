@@ -105,7 +105,6 @@
                                     <ComboBox x:Name="CmbPorts" Width="120" Height="26" Margin="0,0,8,0"/>
                                     <Button Content="Yenile" Width="65" Height="26" Margin="0,0,8,0" Click="BtnRefreshPorts_Click"/>
                                     <Button Content="Bağlan" Width="75" Height="26" Background="#10B981" Foreground="White" BorderThickness="0" Click="BtnConnectPort_Click"/>
-                                    <Button Content="⚡ Sanal Pedal Testi" Width="140" Height="26" Margin="10,0,0,0" Background="#8B5CF6" Foreground="White" BorderThickness="0" Click="BtnSimulatePedal_Click"/>
                                 </StackPanel>
                                 <TextBlock x:Name="TxtSerialStatus" Text="Pedal aranıyor..." Foreground="#64748B" FontSize="12"/>
                             </StackPanel>
