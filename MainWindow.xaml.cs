@@ -203,6 +203,10 @@ namespace HBYSBridge
                 {
                     _sniffer.SimulateComPedalPress("COM3");
                 }
+                else if (device.Equals("xbox", StringComparison.OrdinalIgnoreCase))
+                {
+                    _sniffer.SimulateXboxButtonPress("Xbox - A Tuşu");
+                }
             });
         }
 

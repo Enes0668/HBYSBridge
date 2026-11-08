@@ -70,7 +70,7 @@ namespace HBYSBridge.Services
             _activeSerialPorts.Clear();
         }
 
-        // --- SANAL PEDAL SİMÜLATÖRÜ (2. TEST İÇİN) ---
+        // --- SANAL PEDAL VE XBOX SİMÜLATÖRÜ ---
         public void SimulateComPedalPress(string portName = "COM3")
         {
             Task.Run(async () =>
@@ -96,6 +96,36 @@ namespace HBYSBridge.Services
                     DeviceName = $"{portName} Hualin HL-300 Ayak Pedalı (Simülasyon)",
                     SignalId = $"{portName} - CTS (Pedal Kontak)",
                     RawData = "KONTAK AÇIK (PEDAL BIRAKILDI)",
+                    IsPressed = false,
+                    Timestamp = DateTime.Now
+                };
+                SignalCaptured?.Invoke(releaseSignal);
+            });
+        }
+
+        public void SimulateXboxButtonPress(string buttonName = "Xbox - A Tuşu")
+        {
+            Task.Run(async () =>
+            {
+                var pressSignal = new CapturedSignal
+                {
+                    DeviceType = "Oyun Kolu (USB)",
+                    DeviceName = "Xbox Controller (XInput)",
+                    SignalId = buttonName,
+                    RawData = "BUTON BASILDI",
+                    IsPressed = true,
+                    Timestamp = DateTime.Now
+                };
+                SignalCaptured?.Invoke(pressSignal);
+
+                await Task.Delay(400);
+
+                var releaseSignal = new CapturedSignal
+                {
+                    DeviceType = "Oyun Kolu (USB)",
+                    DeviceName = "Xbox Controller (XInput)",
+                    SignalId = buttonName,
+                    RawData = "BUTON BIRAKILDI",
                     IsPressed = false,
                     Timestamp = DateTime.Now
                 };
