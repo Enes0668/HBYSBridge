@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Obfuscator>
+  <Var name="InPath" value=".\bin\Release\net8.0-windows" />
+  <Var name="OutPath" value=".\bin\Release\net8.0-windows\Obfuscated" />
+  
+  <Var name="KeepPublicApi" value="false" />
+  <Var name="HidePrivateApi" value="true" />
+  <Var name="ReuseNames" value="false" />
+  <Var name="RenameProperties" value="true" />
+  <Var name="RenameEvents" value="true" />
+  <Var name="RenameFields" value="true" />
+  <Var name="RenameMethods" value="true" />
+  <Var name="RenameParameters" value="true" />
+  <Var name="SuppressIldasm" value="true" />
+
+  <AssemblySearchPath path="C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App\8.0.18" />
+  <AssemblySearchPath path="C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.18" />
+
+  <Module file="$(InPath)\HBYSBridge.dll">
+    <!-- WPF XAML motorunun ve başlatıcının hata vermemesi için UI sınıflarının isimleri korunur -->
+    <SkipType name="HBYSBridge.App" />
+    <SkipType name="HBYSBridge.MainWindow" />
+  </Module>
+</Obfuscator>
