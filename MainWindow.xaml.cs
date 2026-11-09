@@ -26,7 +26,7 @@ namespace HBYSBridge
             InitializeDefaultMappings();
             LoadSettings();
 
-            GridMappings.ItemsSource = Mappings;
+            ListCommands.ItemsSource = Mappings;
 
             _sniffer.SignalCaptured += OnSignalCaptured;
             _sniffer.LogMessage += AddLog;
@@ -55,12 +55,19 @@ namespace HBYSBridge
 
         private void InitializeDefaultMappings()
         {
-            // İlk ekran görüntündeki birebir orijinal komutlar ve kısayollar
+            // --- GRUP 1: KAYIT ---
+            Mappings.Add(new CommandMapping
+            {
+                IsHeader = true,
+                CommandName = "Kayıt"
+            });
+
             Mappings.Add(new CommandMapping
             {
                 CommandId = "REC_START_PAUSE",
                 CommandName = "Kayıt başla / duraklat / devam",
                 VirtualKeyCombo = "Ctrl+Alt+F7",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F7",
                 AssignedInput = "Snopy - R1 (Sağ Üst)"
             });
 
@@ -69,6 +76,7 @@ namespace HBYSBridge
                 CommandId = "REC_HOLD",
                 CommandName = "Kayıt (basılı tut konuş)",
                 VirtualKeyCombo = "Ctrl+Alt+F7",
+                DefaultShortcutText = "",
                 IsHoldCommand = true,
                 AssignedInput = "— atanmadı —"
             });
@@ -78,6 +86,7 @@ namespace HBYSBridge
                 CommandId = "REC_SAVE",
                 CommandName = "Kaydı kaydet",
                 VirtualKeyCombo = "Ctrl+Alt+F9",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F9",
                 AssignedInput = "Snopy - Buton 3 (Çarpı / A)"
             });
 
@@ -86,7 +95,15 @@ namespace HBYSBridge
                 CommandId = "REC_CANCEL",
                 CommandName = "Kaydı iptal et",
                 VirtualKeyCombo = "Ctrl+Alt+F6",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F6",
                 AssignedInput = "Snopy - Buton 2 (Daire / B)"
+            });
+
+            // --- GRUP 2: DİNLEME ---
+            Mappings.Add(new CommandMapping
+            {
+                IsHeader = true,
+                CommandName = "Dinleme"
             });
 
             Mappings.Add(new CommandMapping
@@ -94,6 +111,7 @@ namespace HBYSBridge
                 CommandId = "PLAY_HOLD",
                 CommandName = "Dinle (basılı tut)",
                 VirtualKeyCombo = "F10",
+                DefaultShortcutText = "Klavye · F10",
                 IsHoldCommand = true,
                 AssignedInput = "— atanmadı —"
             });
@@ -103,6 +121,7 @@ namespace HBYSBridge
                 CommandId = "PLAY_STOP",
                 CommandName = "Dinle / durdur",
                 VirtualKeyCombo = "Ctrl+Alt+F5",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F5",
                 AssignedInput = "— atanmadı —"
             });
 
@@ -111,6 +130,7 @@ namespace HBYSBridge
                 CommandId = "REWIND_HOLD",
                 CommandName = "Geri sar (basılı tut)",
                 VirtualKeyCombo = "Ctrl+Alt+F11",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F11",
                 IsHoldCommand = true,
                 AssignedInput = "— atanmadı —"
             });
@@ -120,6 +140,7 @@ namespace HBYSBridge
                 CommandId = "FORWARD_HOLD",
                 CommandName = "İleri sar (basılı tut)",
                 VirtualKeyCombo = "Ctrl+Alt+F12",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F12",
                 IsHoldCommand = true,
                 AssignedInput = "— atanmadı —"
             });
@@ -129,6 +150,7 @@ namespace HBYSBridge
                 CommandId = "PREV_REC",
                 CommandName = "Önceki kayıt",
                 VirtualKeyCombo = "Ctrl+Alt+F5",
+                DefaultShortcutText = "",
                 AssignedInput = "— atanmadı —"
             });
 
@@ -137,6 +159,23 @@ namespace HBYSBridge
                 CommandId = "NEXT_REC",
                 CommandName = "Sonraki kayıt",
                 VirtualKeyCombo = "Ctrl+Alt+F8",
+                DefaultShortcutText = "Klavye · Ctrl+Alt+F8",
+                AssignedInput = "— atanmadı —"
+            });
+
+            Mappings.Add(new CommandMapping
+            {
+                CommandId = "SLOW_DOWN",
+                CommandName = "Yavaşlat",
+                DefaultShortcutText = "",
+                AssignedInput = "— atanmadı —"
+            });
+
+            Mappings.Add(new CommandMapping
+            {
+                CommandId = "SPEED_UP",
+                CommandName = "Hızlandır",
+                DefaultShortcutText = "",
                 AssignedInput = "— atanmadı —"
             });
         }
@@ -154,7 +193,6 @@ namespace HBYSBridge
         {
             Dispatcher.Invoke(() =>
             {
-                // Canlı buton göstergesi
                 if (signal.DeviceType.Contains("Oyun Kolu"))
                 {
                     TxtLiveGamepadButton.Text = signal.IsPressed ? $"🟢 {signal.SignalId} (BASILDI)" : $"⚪ {signal.SignalId} (BIRAKILDI)";
@@ -164,7 +202,6 @@ namespace HBYSBridge
                     TxtSerialStatus.Text = signal.IsPressed ? $"🟢 {signal.SignalId} (BASILDI)" : "Pedal bırakıldı.";
                 }
 
-                // Düğme atama modundaysa
                 if (_assigningCommand != null && signal.IsPressed)
                 {
                     _assigningCommand.AssignedInput = signal.SignalId;
@@ -175,8 +212,7 @@ namespace HBYSBridge
                     return;
                 }
 
-                // Normal komut tetikleme
-                var mapping = Mappings.FirstOrDefault(m => m.AssignedInput.Equals(signal.SignalId, StringComparison.OrdinalIgnoreCase));
+                var mapping = Mappings.FirstOrDefault(m => !m.IsHeader && m.AssignedInput.Equals(signal.SignalId, StringComparison.OrdinalIgnoreCase));
                 if (mapping != null)
                 {
                     if (mapping.IsHoldCommand)
@@ -212,27 +248,26 @@ namespace HBYSBridge
 
         private void BtnAssign_Click(object sender, RoutedEventArgs e)
         {
-            if (GridMappings.SelectedItem is CommandMapping selected)
+            if (ListCommands.SelectedItem is CommandMapping selected && !selected.IsHeader)
             {
                 _assigningCommand = selected;
                 TxtAssignPrompt.Text = $"'{selected.CommandName}' için koldan bir tuşa veya pedala basın...";
             }
             else
             {
-                MessageBox.Show("Lütfen atamak istediğiniz komutu listeden seçin.", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Lütfen atamak istediğiniz bir komut seçin.", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
         private void BtnRemoveAssign_Click(object sender, RoutedEventArgs e)
         {
-            if (GridMappings.SelectedItem is CommandMapping selected)
+            if (ListCommands.SelectedItem is CommandMapping selected && !selected.IsHeader)
             {
                 selected.AssignedInput = "— atanmadı —";
                 SaveSettings();
                 AddLog($"[Atama Kaldırıldı] {selected.CommandName}");
             }
         }
-
 
         private void RefreshComPorts()
         {
@@ -275,7 +310,7 @@ namespace HBYSBridge
         {
             try
             {
-                var dict = Mappings.ToDictionary(m => m.CommandId, m => m.AssignedInput);
+                var dict = Mappings.Where(m => !m.IsHeader).ToDictionary(m => m.CommandId, m => m.AssignedInput);
                 File.WriteAllText(_settingsFilePath, JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
             }
             catch { }
@@ -291,7 +326,7 @@ namespace HBYSBridge
                     var dict = JsonSerializer.Deserialize<System.Collections.Generic.Dictionary<string, string>>(json);
                     if (dict != null)
                     {
-                        foreach (var m in Mappings)
+                        foreach (var m in Mappings.Where(m => !m.IsHeader))
                         {
                             if (dict.TryGetValue(m.CommandId, out var val))
                             {

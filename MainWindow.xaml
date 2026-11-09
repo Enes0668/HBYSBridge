@@ -4,124 +4,221 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="HBYSX Dictation Bridge" Height="600" Width="800"
+        Title="HBYSX Dictation Bridge" Height="680" Width="820"
         WindowStartupLocation="CenterScreen"
-        FontFamily="Segoe UI" FontSize="13" Background="#F8FAFC">
+        FontFamily="Segoe UI" FontSize="12.5" Background="#FBFBFB">
 
-    <Grid Margin="12">
+    <Window.Resources>
+        <!-- Windows Buton Stili (Orijinal Görseldeki gibi sade ve zarif) -->
+        <Style x:Key="ClassicBtnStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F2F2F2"/>
+            <Setter Property="BorderBrush" Value="#C0C0C0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,3"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E5E5E5"/>
+                    <Setter Property="BorderBrush" Value="#999999"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#D8D8D8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12,10,12,12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ÜST BİLGİ ALANI (İLK GÖRSELİN AYNISI) -->
-        <Border Grid.Row="0" Background="White" CornerRadius="6" Padding="14" Margin="0,0,0,10"
-                BorderBrush="#E2E8F0" BorderThickness="1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <!-- ÜST BİLGİ ALANI (İLK GÖRSELE %100 BİREBİR) -->
+        <Grid Grid.Row="0" Margin="4,0,4,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                        <Ellipse Width="10" Height="10" Fill="#10B981" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Çalışıyor, port 4547." FontWeight="Bold" FontSize="15" Foreground="#047857"/>
-                    </StackPanel>
-                    <TextBlock x:Name="TxtDeviceStatus" Text="Cihaz aranıyor..." Foreground="#64748B" FontSize="12"/>
-                    <TextBlock Text="Açık ses kaydı ekranı yok." Foreground="#94A3B8" FontSize="11" Margin="0,2,0,0"/>
-                </StackPanel>
+            <!-- Sol Üst Bilgiler -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Çalışıyor, port 4547." FontWeight="Bold" FontSize="15" Foreground="#1E7E34" Margin="0,0,0,2"/>
+                <TextBlock x:Name="TxtDeviceStatus" Text="Cihaz bulunamadı. Pedalı / SpeechMike'ı takın." Foreground="#555555" FontSize="12"/>
+                <TextBlock Text="Açık ses kaydı ekranı yok." Foreground="#888888" FontSize="11.5" Margin="0,1,0,0"/>
+            </StackPanel>
 
-                <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <CheckBox Content="Windows ile başlat" Margin="0,0,0,4" Foreground="#334155"/>
-                    <TextBlock Text="Bağlı ekran: 1" Foreground="#64748B" FontSize="11" HorizontalAlignment="Right"/>
-                </StackPanel>
-            </Grid>
-        </Border>
+            <!-- Sağ Üst Bilgiler -->
+            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <CheckBox Content="Windows ile başlat" Foreground="#333333" FontSize="12" Margin="0,0,0,4"/>
+                <TextBlock Text="Bağlı ekran: 0" Foreground="#333333" FontSize="12" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </Grid>
 
-        <!-- SEKMELER (DÜĞME ATAMALARI, CİHAZLAR, LOG) -->
-        <TabControl Grid.Row="1" Background="White" BorderBrush="#CBD5E1">
+        <!-- SEKMELER -->
+        <TabControl Grid.Row="1" Background="White" BorderBrush="#C6C6C6" BorderThickness="1">
             
-            <!-- 1. DÜĞME ATAMALARI (BİREBİR İLK GÖRSEL) -->
-            <TabItem Header="Düğme atamaları">
-                <Grid Margin="8">
+            <!-- 1. DÜĞME ATAMALARI (ORİJİNAL TABLO GÖRÜNÜMÜ) -->
+            <TabItem Header="Düğme atamaları" FontSize="12">
+                <Grid Margin="10,8,10,8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <DataGrid x:Name="GridMappings" Grid.Row="0" AutoGenerateColumns="False" 
-                              CanUserAddRows="False" CanUserDeleteRows="False"
-                              GridLinesVisibility="Horizontal" HeadersVisibility="Column"
-                              HorizontalGridLinesBrush="#F1F5F9" Background="White"
-                              BorderThickness="1" BorderBrush="#E2E8F0" RowHeight="32"
-                              SelectionMode="Single">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Komut" Binding="{Binding CommandName}" Width="260" IsReadOnly="True" FontWeight="Medium"/>
-                            <DataGridTextColumn Header="Atanan düğme (değiştirmek için tıklayın)" Binding="{Binding AssignedInput}" Width="*" IsReadOnly="True" Foreground="#2563EB"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <!-- TABLO BAŞLIĞI VE İÇERİK -->
+                    <Border Grid.Row="0" BorderBrush="#E0E0E0" BorderThickness="1" Background="White">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="26"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="1" Margin="0,10,0,0">
-                        <TextBlock Text="Atamalar bu bilgisayarda saklanır. &quot;Basılı tut&quot; komutlarında düğme bırakılınca işlem durur. Kayıt yetkisi olmayan kullanıcıda (raportör) kayıt komutları yok sayılır."
-                                   Foreground="#64748B" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"/>
-                        
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="BtnAssign" Content="Ata" Width="90" Height="28" Margin="0,0,8,0" 
-                                    Background="#2563EB" Foreground="White" BorderThickness="0" Cursor="Hand" Click="BtnAssign_Click"/>
-                            <Button x:Name="BtnRemoveAssign" Content="Atamayı kaldır" Width="110" Height="28" 
-                                    Background="#E2E8F0" Foreground="#334155" BorderThickness="0" Cursor="Hand" Click="BtnRemoveAssign_Click"/>
-                            <TextBlock x:Name="TxtAssignPrompt" Text="" Foreground="#DC2626" FontWeight="SemiBold" 
-                                       VerticalAlignment="Center" Margin="15,0,0,0"/>
-                        </StackPanel>
+                            <!-- Sütun Başlıkları -->
+                            <Border Grid.Row="0" Background="#FAFAFA" BorderBrush="#E5E5E5" BorderThickness="0,0,0,1">
+                                <Grid Margin="8,0,8,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="320"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Komut" FontWeight="SemiBold" Foreground="#333333" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="Atanan düğme (değiştirmek için tıklayın)" FontWeight="SemiBold" Foreground="#333333" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Liste Satırları -->
+                            <ListView x:Name="ListCommands" Grid.Row="1" BorderThickness="0" 
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      SelectionMode="Single" Background="Transparent">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="MinHeight" Value="24"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListViewItem">
+                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="8,3">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="#CCE8FF"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="#E5F3FF"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <!-- Başlık Satırı (Kayıt, Dinleme) -->
+                                            <Grid x:Name="HeaderRow" Visibility="Collapsed" Margin="0,4,0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding CommandName}" FontWeight="SemiBold" Foreground="#1A5396" FontSize="12.5"/>
+                                                <Rectangle Grid.Column="1" Height="1" Fill="#B5D3F2" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                            </Grid>
+
+                                            <!-- Normal Komut Satırı -->
+                                            <Grid x:Name="ItemRow" Visibility="Visible">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="312"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding CommandName}" Foreground="#222222" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding DisplayAssignedText}" Foreground="{Binding AssignedTextColor}" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsHeader}" Value="True">
+                                                <Setter TargetName="HeaderRow" Property="Visibility" Value="Visible"/>
+                                                <Setter TargetName="ItemRow" Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+
+                    <!-- ALT BİLGİ METNİ -->
+                    <TextBlock Grid.Row="1" Margin="0,8,0,8" FontSize="11" Foreground="#555555" TextWrapping="Wrap"
+                               Text="Atamalar bu bilgisayarda saklanır. &quot;Basılı tut&quot; komutlarında düğme bırakılınca işlem durur. Kayıt yetkisi olmayan kullanıcıda (raportör) kayıt komutları yok sayılır."/>
+
+                    <!-- ALT BUTONLAR (SOLDA YAN YANA) -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button x:Name="BtnAssign" Content="Ata" Width="60" Height="26" Margin="0,0,6,0" 
+                                Style="{StaticResource ClassicBtnStyle}" Click="BtnAssign_Click"/>
+                        <Button x:Name="BtnRemoveAssign" Content="Atamayı kaldır" Width="95" Height="26" 
+                                Style="{StaticResource ClassicBtnStyle}" Click="BtnRemoveAssign_Click"/>
+                        <TextBlock x:Name="TxtAssignPrompt" Text="" Foreground="#C00000" FontWeight="SemiBold" 
+                                   VerticalAlignment="Center" Margin="12,0,0,0"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
 
-            <!-- 2. CİHAZLAR (SADECE DONANIM VE TEST) -->
-            <TabItem Header="Cihazlar">
+            <!-- 2. CİHAZLAR -->
+            <TabItem Header="Cihazlar" FontSize="12">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="14">
-                        <!-- Oyun Kolu -->
-                        <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="14" Margin="0,0,0,14">
+                        <GroupBox Header="Oyun Kolu / USB Kumanda" Margin="0,0,0,12" Padding="8">
                             <StackPanel>
-                                <TextBlock Text="🎮 Oyun Kolu (Snopy / Xbox / USB Gamepad)" FontWeight="Bold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,6"/>
-                                <TextBlock x:Name="TxtGamepadName" Text="Cihaz aranıyor..." Foreground="#475569" Margin="0,0,0,8"/>
-                                <Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="4" Padding="10">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Koldan Basılan Tuş:" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <TextBlock x:Name="TxtLiveGamepadButton" Text="[Tuşa basın]" FontWeight="Bold" Foreground="#2563EB" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Seri Port Pedal -->
-                        <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="14">
-                            <StackPanel>
-                                <TextBlock Text="🦶 Ayak Pedalı (Seri Port / COM Port)" FontWeight="Bold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,6"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <TextBlock Text="COM Port:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <ComboBox x:Name="CmbPorts" Width="120" Height="26" Margin="0,0,8,0"/>
-                                    <Button Content="Yenile" Width="65" Height="26" Margin="0,0,8,0" Click="BtnRefreshPorts_Click"/>
-                                    <Button Content="Bağlan" Width="75" Height="26" Background="#10B981" Foreground="White" BorderThickness="0" Click="BtnConnectPort_Click"/>
+                                <TextBlock x:Name="TxtGamepadName" Text="Cihaz aranıyor..." Foreground="#333333" Margin="0,0,0,6"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Son Basılan Tuş: " Foreground="#666666"/>
+                                    <TextBlock x:Name="TxtLiveGamepadButton" Text="[Koldan tuşa basın]" FontWeight="Bold" Foreground="#1E7E34"/>
                                 </StackPanel>
-                                <TextBlock x:Name="TxtSerialStatus" Text="Pedal aranıyor..." Foreground="#64748B" FontSize="12"/>
                             </StackPanel>
-                        </Border>
+                        </GroupBox>
+
+                        <GroupBox Header="Seri Port / Ayak Pedalı" Padding="8">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <TextBlock Text="COM Port:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox x:Name="CmbPorts" Width="110" Height="24" Margin="0,0,8,0"/>
+                                    <Button Content="Yenile" Width="60" Height="24" Margin="0,0,6,0" Style="{StaticResource ClassicBtnStyle}" Click="BtnRefreshPorts_Click"/>
+                                    <Button Content="Bağlan" Width="65" Height="24" Style="{StaticResource ClassicBtnStyle}" Click="BtnConnectPort_Click"/>
+                                </StackPanel>
+                                <TextBlock x:Name="TxtSerialStatus" Text="Pedal aranıyor..." Foreground="#555555" FontSize="11.5"/>
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
 
-            <!-- 3. LOG (TEST ÇIKTILARI) -->
-            <TabItem Header="Log">
+            <!-- 3. LOG -->
+            <TabItem Header="Log" FontSize="12">
                 <Grid Margin="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <ListBox x:Name="ListLogs" Grid.Row="0" FontFamily="Consolas" FontSize="11" Background="#0F172A" Foreground="#E2E8F0" BorderThickness="0"/>
-                    <Button Content="Logu Temizle" Grid.Row="1" HorizontalAlignment="Right" Width="90" Height="26" Margin="0,8,0,0" Click="BtnClearLog_Click"/>
+                    <ListBox x:Name="ListLogs" Grid.Row="0" FontFamily="Consolas" FontSize="11" Background="White" Foreground="#333333" BorderBrush="#E0E0E0"/>
+                    <Button Content="Logu Temizle" Grid.Row="1" HorizontalAlignment="Right" Width="85" Height="24" Margin="0,6,0,0" Style="{StaticResource ClassicBtnStyle}" Click="BtnClearLog_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>
