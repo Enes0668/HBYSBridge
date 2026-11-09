@@ -49,7 +49,7 @@ namespace HBYSBridge.Models
             }
         }
 
-        public string AssignedTextColor => (DisplayAssignedText == "— atanmadı —") ? "#888888" : "#222222";
+        public string AssignedTextColor => (DisplayAssignedText == "— atanmadı —") ? "#64748B" : "#38BDF8";
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
