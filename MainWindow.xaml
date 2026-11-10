@@ -231,12 +231,25 @@
                     <TextBlock Grid.Row="1" Text="💡 İpucu: Listeden bir komut seçip 'Düğme Ata' butonuna basın, ardından koldan veya pedaldan istediğiniz tuşa dokunun."
                                Foreground="#64748B" FontSize="11.5" Margin="0,10,0,10"/>
 
-                    <!-- BUTONLAR -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <Button x:Name="BtnAssign" Content="🎯 Düğme Ata" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" Click="BtnAssign_Click"/>
-                        <Button x:Name="BtnRemoveAssign" Content="🗑️ Atamayı Kaldır" Style="{StaticResource SecondaryBtn}" Margin="0,0,10,0" Click="BtnRemoveAssign_Click"/>
-                        <TextBlock x:Name="TxtAssignPrompt" Text="" Foreground="#F87171" FontWeight="Bold" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <!-- BUTONLAR VE KORUMA AYARI -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <Button x:Name="BtnAssign" Content="🎯 Düğme Ata" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" Click="BtnAssign_Click"/>
+                            <Button x:Name="BtnRemoveAssign" Content="🗑️ Atamayı Kaldır" Style="{StaticResource SecondaryBtn}" Margin="0,0,10,0" Click="BtnRemoveAssign_Click"/>
+                            <TextBlock x:Name="TxtAssignPrompt" Text="" Foreground="#F87171" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <CheckBox x:Name="ChkWindowGuard" Grid.Column="2" 
+                                  Content="🛡️ Akıllı Pencere Koruması (Yalnızca HBYS / Tarayıcı)" 
+                                  IsChecked="True" Foreground="#38BDF8" FontWeight="SemiBold" 
+                                  VerticalAlignment="Center" Cursor="Hand"
+                                  Checked="ChkWindowGuard_Changed" Unchecked="ChkWindowGuard_Changed"/>
+                    </Grid>
                 </Grid>
             </TabItem>
 

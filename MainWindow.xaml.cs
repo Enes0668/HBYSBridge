@@ -217,15 +217,34 @@ namespace HBYSBridge
                 {
                     if (mapping.IsHoldCommand)
                     {
-                        KeyboardSimulator.SendKeyCombo(mapping.VirtualKeyCombo, signal.IsPressed);
-                        AddLog(signal.IsPressed
-                            ? $"[KOMUT BASILI TUTULUYOR] {mapping.CommandName} ({mapping.VirtualKeyCombo})"
-                            : $"[KOMUT BIRAKILDI] {mapping.CommandName}");
+                        bool sent = KeyboardSimulator.SendKeyCombo(mapping.VirtualKeyCombo, signal.IsPressed, out string winTitle, out string winProc);
+                        if (signal.IsPressed)
+                        {
+                            if (sent)
+                            {
+                                AddLog($"[KOMUT BASILI TUTULUYOR] {mapping.CommandName} ({mapping.VirtualKeyCombo}) -> [{winTitle}]");
+                            }
+                            else
+                            {
+                                AddLog($"🛡️ [PENCERE KORUMASI] Engellendi! Aktif: '{winTitle}' ({winProc}). HBYS/PACS değil.");
+                            }
+                        }
+                        else
+                        {
+                            AddLog($"[KOMUT BIRAKILDI] {mapping.CommandName}");
+                        }
                     }
                     else if (signal.IsPressed)
                     {
-                        KeyboardSimulator.TapKeyCombo(mapping.VirtualKeyCombo);
-                        AddLog($"[KOMUT ÇALIŞTI] {mapping.CommandName} -> Klavye '{mapping.VirtualKeyCombo}' gönderildi.");
+                        bool sent = KeyboardSimulator.TapKeyCombo(mapping.VirtualKeyCombo, out string winTitle, out string winProc);
+                        if (sent)
+                        {
+                            AddLog($"[KOMUT ÇALIŞTI] {mapping.CommandName} -> Klavye '{mapping.VirtualKeyCombo}' gönderildi. [{winTitle}]");
+                        }
+                        else
+                        {
+                            AddLog($"🛡️ [PENCERE KORUMASI] Engellendi! Aktif pencere: '{winTitle}' ({winProc}). Tuş basılmadı.");
+                        }
                     }
                 }
             });
@@ -306,11 +325,23 @@ namespace HBYSBridge
             }
         }
 
+        private void ChkWindowGuard_Changed(object sender, RoutedEventArgs e)
+        {
+            if (ChkWindowGuard != null)
+            {
+                KeyboardSimulator.EnableWindowGuard = ChkWindowGuard.IsChecked == true;
+                AddLog(KeyboardSimulator.EnableWindowGuard
+                    ? "🛡️ Akıllı Pencere Koruması AKTİF. Yalnızca HBYS/PACS/Tarayıcı açıkken tuş gönderilir."
+                    : "⚠️ Akıllı Pencere Koruması DEVRE DIŞI. Tuşlar her aktif pencereye iletilir!");
+            }
+        }
+
         private void SaveSettings()
         {
             try
             {
                 var dict = Mappings.Where(m => !m.IsHeader).ToDictionary(m => m.CommandId, m => m.AssignedInput);
+                dict["_windowGuardEnabled"] = KeyboardSimulator.EnableWindowGuard ? "true" : "false";
                 File.WriteAllText(_settingsFilePath, JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
             }
             catch { }
@@ -332,6 +363,12 @@ namespace HBYSBridge
                             {
                                 m.AssignedInput = val;
                             }
+                        }
+
+                        if (dict.TryGetValue("_windowGuardEnabled", out var wgStr) && bool.TryParse(wgStr, out bool wgVal))
+                        {
+                            KeyboardSimulator.EnableWindowGuard = wgVal;
+                            if (ChkWindowGuard != null) ChkWindowGuard.IsChecked = wgVal;
                         }
                     }
                 }
